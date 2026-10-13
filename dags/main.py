@@ -2,8 +2,13 @@ from airflow import DAG
 import pendulum
 from datetime import datetime , timedelta
 
-from api.video_stats import get_playlist_id, get_video_ids, extract_video_stats, save_to_json
 
+from api.video_stats import (
+    get_playlist_id,
+    get_video_ids,
+    extract_video_data,
+    save_to_json,
+)
 # Define the local timezone
 local_tz = pendulum.timezone("Asia/Kolkata")
 
@@ -34,8 +39,8 @@ with DAG(
 
     playlistId = get_playlist_id()
     video_ids = get_video_ids(playlistId)
-    extract_data = extract_video_stats(video_ids)
-    save_to_json_task = save_to_json(extracted_stats)
+    extract_data = extract_video_data(video_ids)
+    save_to_json_task = save_to_json(extract_data)
 
     #define dependencies
     playlistId >> video_ids >> extract_data >> save_to_json_task
