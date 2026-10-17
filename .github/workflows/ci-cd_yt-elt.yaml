@@ -79,15 +79,6 @@ jobs:
                 dags/**
                 include/**
                 docker-compose.yaml
-        - name: Normalize ELT database name
-          if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
-          run: |
-            ELT_DATABASE_NAME="$(printf '%s' "$ELT_DATABASE_NAME" | sed 's/[[:space:]]*$//')"
-            if [ -z "$ELT_DATABASE_NAME" ]; then
-              echo "ELT_DATABASE_NAME must not be empty" >&2
-              exit 1
-            fi
-            echo "ELT_DATABASE_NAME=$ELT_DATABASE_NAME" >> "$GITHUB_ENV"
         - name: Set up Docker Compose
           if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
           run: docker compose up -d
